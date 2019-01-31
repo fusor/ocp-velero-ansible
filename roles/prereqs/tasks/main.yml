@@ -1,0 +1,9 @@
+---
+- name: check if config exists
+  stat:
+    path: "{{ playbook_dir }}/install-config.yaml"
+  register: p
+- name: fail if config doesn't exist
+  fail:
+    msg: "install-config.yaml not found in current dir"
+  when: p.stat.exists == false

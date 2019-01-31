@@ -1,0 +1,6 @@
+- hosts: localhost
+  roles:
+  - prereqs
+  - install_ocp_installer
+  - install_ark
+  - launch_ocp_cluster
