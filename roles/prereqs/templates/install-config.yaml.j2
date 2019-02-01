@@ -1,0 +1,25 @@
+apiVersion: {{ apiVersion }}
+baseDomain: {{ baseDomain }}
+machines:
+- name: master
+  platform: {}
+  replicas: {{ masterReplicas }}
+- name: worker
+  platform: {}
+  replicas: {{ workerReplicas }}
+metadata:
+  creationTimestamp: null
+  name: {{ clusterName }}
+networking:
+  clusterNetworks:
+  - cidr: 10.128.0.0/14
+    hostSubnetLength: 9
+  machineCIDR: 10.0.0.0/16
+  serviceCIDR: 172.30.0.0/16
+  type: OpenshiftSDN
+platform:
+  aws:
+    region: {{ awsRegion }}
+pullSecret: '{{ pullSecret }}'
+sshKey: |
+  {{ sshKey }}

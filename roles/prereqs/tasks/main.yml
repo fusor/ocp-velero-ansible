@@ -3,7 +3,36 @@
   stat:
     path: "{{ playbook_dir }}/install-config.yaml"
   register: p
+
+- name: check if aws config dir exists
+  stat:
+    path: "{{ ansible_env.HOME }}/.aws"
+  register: aws_creds_dir
+
+- name: check if aws credentials exist
+  stat:
+    path: "{{ ansible_env.HOME }}/.aws/credentials"
+  register: aws_creds_file
+
 - name: fail if config doesn't exist
   fail:
     msg: "install-config.yaml not found in current dir"
-  when: p.stat.exists == false
+  when: p.stat.exists == false and generateConfig == false
+
+- name: template install file
+  template:
+    src: install-config.yaml.j2
+    dest: "{{ playbook_dir }}/install-config.yaml"
+  when: generateConfig|bool == true and p.stat.exists == false
+
+- name: create aws creds dir
+  file:
+    path: "{{ ansible_env.HOME }}/.aws"
+    state: directory
+  when: aws_creds_dir.stat.exists == false
+
+- name: template aws creds
+  template:
+    src: credentials.j2
+    dest: "{{ ansible_env.HOME }}/.aws/credentials"
+  when: aws_creds_file.stat.exists == false

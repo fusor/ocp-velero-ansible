@@ -1,0 +1,5 @@
+---
+- name: template install file
+  template:
+    src: install-config.yaml.j2
+    dest: "{{ playbook_dir }}/install-config.yaml"
