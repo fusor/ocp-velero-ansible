@@ -28,10 +28,12 @@
   register: minio_route_res
 - name: Create backupstoragelocationn for ark
   vars:
-    minio_route: "{{ minio_route_res.result.spec.host }}"
+    minio_route: "{{ minio_route_res | json_query('result.spec.host') | default('foo.example.com') }}"
   k8s:
     state: "{{ state }}"
     definition: "{{ lookup('template', '05-ark-backupstoragelocation.yaml.j2') | from_yaml }}"
+  ignore_errors: yes
+
 
 - name: Create ark deployment
   k8s:

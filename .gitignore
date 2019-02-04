@@ -8,4 +8,5 @@ auth/
 terraform*
 playbook.retry
 launch-ark.retry
+destroy-ark.retry
 launch-ocp-cluster.retry
