@@ -52,6 +52,14 @@ Don't worry about logging into the cluster, as long as the previous playbook
 was successful Ansible will read the Kubeconfig and kubeadmin password each
 time.
 
+### Destroying Ark
+
+If you would like to start with a fresh installation of Ark, you can delete all
+the Ark resources with:
+```
+$ ansible-playbook destroy-ark.yml
+```
+
 ## Visit Minio
 
 To confirm everything was installed propery, you can visit the created route
