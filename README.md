@@ -22,6 +22,10 @@ aws_access_key_id: ******
 aws_secret_access_key: *******
 pullSecret: "{{ lookup('file', '{{ playbook_dir }}//config/pull-secret') | from_json }}" # Do not modify this line
 sshKey: "ssh-rsa ************************"
+baseDomain: mg.dog8code.com
+masterReplicas: 1
+workerReplicas: 1
+awsRegion: us-east-2
 ```
 
 The Ansible tasks will write the credentials to `~/.aws/credentials` if they do
@@ -47,3 +51,21 @@ $ ansible-playbook launch-ark.yml
 Don't worry about logging into the cluster, as long as the previous playbook
 was successful Ansible will read the Kubeconfig and kubeadmin password each
 time.
+
+## Visit Minio
+
+To confirm everything was installed propery, you can visit the created route
+and login to the minio instance. To get the route:
+```
+$ export KUBECONFIG=<ark-ansible-directory>/auth/kubeconfig
+$ oc get route -n heptio-ark
+[dymurray@pups ark-ansible]$ oc get route
+NAME      HOST/PORT                                   PATH      SERVICES   PORT      TERMINATION   WILDCARD
+minio     minio-heptio-ark.apps.dtm.mg.dog8code.com             minio      9000                    None
+```
+
+Minio's default credentials are:
+```
+Access Key: minio
+Secret Key: minio123
+```
