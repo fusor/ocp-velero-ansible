@@ -20,6 +20,6 @@ networking:
 platform:
   aws:
     region: {{ awsRegion }}
-pullSecret: '{{ pullSecret }}'
+pullSecret: '{{ pullSecret | to_json }}'
 sshKey: |
   {{ sshKey }}

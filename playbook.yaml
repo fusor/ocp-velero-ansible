@@ -1,4 +1,8 @@
 - hosts: localhost
+  vars_prompt:
+    - name: clusterName
+      prompt: "Name of AWS cluster to create"
+      private: no
   roles:
   - prereqs
   - install_ocp_installer

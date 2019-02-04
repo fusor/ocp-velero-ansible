@@ -1,7 +1,9 @@
 .openshift*
+config/pull-secret
 ark/
 metadata.json
 openshift-install
 tls/
 auth/
 terraform*
+playbook.retry

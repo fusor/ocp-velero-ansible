@@ -1,9 +1,1 @@
 ---
-apiVersion: v1beta1
-baseDomain: devcluster.openshift.com
-masterReplicas: 3
-workerReplicas: 3
-clusterName: dymurray
-awsRegion: us-east-1
-pullSecret: '{"auths":{"cloud.openshift.com":{"auth":"b3BlbnNoaWZ0LXJlbGVhc2UtZGV2K3JobmVuZ2luZWVyaW5nZHltdXJyYXkxZnVzOG1qYnBmZzE1d2ZrMXhlMTlpYTB0aXA6UTcxTVlFM0MyMVhHSzgzQkZONExCNFQ5N0Q2UUw2N09WVVk2NFJDVzg1U003R08yU1I1NjZENE9HTkw0TTVUVA==","email":"dymurray@redhat.com"},"quay.io":{"auth":"b3BlbnNoaWZ0LXJlbGVhc2UtZGV2K3JobmVuZ2luZWVyaW5nZHltdXJyYXkxZnVzOG1qYnBmZzE1d2ZrMXhlMTlpYTB0aXA6UTcxTVlFM0MyMVhHSzgzQkZONExCNFQ5N0Q2UUw2N09WVVk2NFJDVzg1U003R08yU1I1NjZENE9HTkw0TTVUVA==","email":"dymurray@redhat.com"}}}'
-sshKey: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDUq7W38xCZ9WGSWCvustaMGMT04tRohw6AKGzI7P7xql5lhCAReyt72n9qWQRZsE1YiCSQuTfXI1oc8NpSM7+lMLwj12G8z3I1YT31JHr9LLYg/XIcExkzfBI920CaS82VqmKOpI9+ARHSJBdIbKRI0f5Y+u4xbc5UzKCJX8jcKGG7nEiw8zm+cvAlfOgssMK+qJppIbVcb2iZNTsw5i2aX6FDMyC+b17DQHzBGpNbhZYxuoERZVRcnYctgIzuo6fD60gniX0fVvrchlOnubB1sRYbloP2r6UE22w/dpLKOFE5i7CA0ZzNBERZ94cIKumIH9MiJs1a6bMe89VOjjNV"

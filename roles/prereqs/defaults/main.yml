@@ -1,8 +1,7 @@
 ---
 apiVersion: v1beta1
 baseDomain: mg.dog8code.com
-masterReplicas: 3
-workerReplicas: 3
-clusterName: dtm2
-awsRegion: us-east-1
+masterReplicas: 1
+workerReplicas: 1
+awsRegion: us-east-2
 generateConfig: true
