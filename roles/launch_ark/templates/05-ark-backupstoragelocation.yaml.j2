@@ -1,0 +1,19 @@
+---
+apiVersion: ark.heptio.com/v1
+kind: BackupStorageLocation
+metadata:
+  name: default
+  namespace: heptio-ark
+spec:
+  provider: aws
+  objectStorage:
+    bucket: ark
+  config:
+    region: minio
+    s3ForcePathStyle: "true"
+    s3Url: http://{{ minio_route }}
+    # Uncomment the following line and provide the value of an externally
+    # available URL for downloading logs, running Ark describe, and more.
+    publicUrl: http://{{ minio_route }}
+    
+

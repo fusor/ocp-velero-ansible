@@ -1,5 +1,44 @@
 ---
-- name: template install file
-  template:
-    src: install-config.yaml.j2
-    dest: "{{ playbook_dir }}/install-config.yaml"
+- name: Apply ark common prereqs
+  k8s:
+    state: "{{ state }}"
+    definition: "{{ lookup('file', '{{ playbook_dir }}/ark/config/common/00-prereqs.yaml')}}"
+- name: Create minio deployment
+  k8s:
+    state: "{{ state }}"
+    definition: "{{ lookup('file', '{{ playbook_dir }}/ark/config/minio/00-minio-deployment.yaml')}}"
+- name: Create minio route
+  k8s:
+    state: "{{ state }}"
+    definition:
+      kind: Route
+      apiVersion: route.openshift.io/v1
+      metadata:
+        name: minio
+        namespace: heptio-ark
+        labels:
+          component: minio
+          service: minio
+      spec:
+        to:
+          kind: Service
+          name: minio
+        port:
+          targetPort: 9000
+  register: minio_route_res
+- name: Create backupstoragelocationn for ark
+  vars:
+    minio_route: "{{ minio_route_res.result.spec.host }}"
+  k8s:
+    state: "{{ state }}"
+    definition: "{{ lookup('template', '05-ark-backupstoragelocation.yaml.j2') | from_yaml }}"
+
+- name: Create ark deployment
+  k8s:
+    state: "{{ state }}"
+    definition: "{{ lookup('file', '{{ playbook_dir }}/ark/config/minio/20-ark-deployment.yaml')}}"
+- name: Create restic daemonset
+  k8s:
+    state: "{{ state }}"
+    definition: "{{ lookup('file', '{{ playbook_dir }}/ark/config/minio/30-restic-daemonset.yaml')}}"
+

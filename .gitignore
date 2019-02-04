@@ -7,3 +7,5 @@ tls/
 auth/
 terraform*
 playbook.retry
+launch-ark.retry
+launch-ocp-cluster.retry

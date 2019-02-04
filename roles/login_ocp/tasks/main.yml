@@ -1,0 +1,8 @@
+---
+- debug:
+    msg: "Logging into cluster using KUBECONFIG: {{ ansible_env.KUBECONFIG }}"
+
+- name: login to cluster
+  vars:
+    kubeadmin_password: "{{ lookup('file', '{{ playbook_dir }}/auth/kubeadmin-password') }}"
+  shell: oc login -u kubeadmin -p {{ kubeadmin_password }}
