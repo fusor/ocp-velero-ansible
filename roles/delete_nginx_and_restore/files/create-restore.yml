@@ -1,0 +1,16 @@
+---
+apiVersion: ark.heptio.com/v1
+kind: Restore
+metadata:
+  name: nginx-backup
+  namespace: heptio-ark
+spec:
+  backupName: nginx-backup
+  excludedResources:
+  - node
+  - events
+  - events.events.k8s.io
+  - backups.ark.heptio.com
+  - restores.ark.heptio.com
+  includedNamespaces:
+  - '*'

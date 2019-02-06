@@ -1,0 +1,63 @@
+---
+- name: Delete nginx namespace to simulate DR
+  k8s:
+    state: absent
+    definition:
+      apiVersion: v1
+      kind: Namespace
+      metadata:
+        name: nginx-example
+        labels:
+          app: nginx
+
+- name: Wait 2 minutes for namespace to be deleted
+  debug:
+    var: ns
+  until:  not ns
+  retries: 10
+  delay: 5
+  vars:
+    ns: '{{ lookup("k8s",
+      kind="Namespace",
+      api_version="v1",
+      resource_name="nginx-example"
+    )}}'
+
+- name: Create ark restore of nginx
+  k8s:
+    state: present
+    definition: "{{ lookup('file', 'create-restore.yml')}}"
+
+- name: Wait for restore to finish
+  debug:
+    var: restore
+  until: restore and restore.status.get("phase", 0) == "Completed"
+  retries: 20
+  delay: 10
+  vars:
+    restore: '{{ lookup("k8s",
+      kind="Restore",
+      api_version="ark.heptio.com/v1",
+      namespace="heptio-ark",
+      resource_name="nginx-backup"
+    )}}'
+
+- name: Wait for nginx deployment
+  debug:
+    var: deploy
+  until: deploy and deploy.status.replicas == deploy.status.get("availableReplicas", 0)
+  retries: 10
+  delay: 10
+  vars:
+    deploy: '{{ lookup("k8s",
+      kind="Deployment",
+      api_version="apps/v1",
+      namespace="nginx-example",
+      label_selector="app=nginx"
+    )}}'
+
+- name: Delete ark restore of nginx (workaround to use common name for restore)
+  k8s:
+    state: absent
+    definition: "{{ lookup('file', 'create-restore.yml')}}"
+

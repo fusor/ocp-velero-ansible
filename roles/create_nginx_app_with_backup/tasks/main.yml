@@ -26,7 +26,7 @@
     var: backup
   until: backup and backup.status.get("phase", 0) == "Completed"
   retries: 10
-  delay: 10
+  delay: 5
   vars:
     backup: '{{ lookup("k8s",
       kind="Backup",
