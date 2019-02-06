@@ -1,0 +1,9 @@
+- hosts: localhost
+  vars:
+    state: present
+  environment:
+    KUBECONFIG: "{{ playbook_dir }}/auth/kubeconfig"
+  roles:
+  - install_ark
+  - login_ocp
+  - create_nginx_app

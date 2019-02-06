@@ -1,0 +1,36 @@
+---
+- name: Create Nginx application
+  k8s:
+    state: "{{ state }}"
+    definition: "{{ lookup('file', 'base.yaml')}}"
+- name: Wait 2 minutes for nginx deployment
+  debug:
+    var: deploy
+  until: deploy and deploy.status.replicas == deploy.status.get("availableReplicas", 0)
+  retries: 10
+  delay: 10
+  vars:
+    deploy: '{{ lookup("k8s",
+      kind="Deployment",
+      api_version="apps/v1",
+      namespace="nginx-example",
+      label_selector="app=nginx"
+    )}}'
+
+- name: Create ark backup of nginx
+  k8s:
+    state : "{{ state }}"
+    definition: "{{ lookup('file', 'create-backup.yml')}}"
+- name: Wait for backup to complete
+  debug:
+    var: backup
+  until: backup and backup.status.get("phase", 0) == "Completed"
+  retries: 10
+  delay: 10
+  vars:
+    backup: '{{ lookup("k8s",
+      kind="Backup",
+      api_version="ark.heptio.com/v1",
+      namespace="heptio-ark"
+    )}}'
+
