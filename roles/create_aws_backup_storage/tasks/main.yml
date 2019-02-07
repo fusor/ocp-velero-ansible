@@ -1,0 +1,34 @@
+- name: Get AWS account information
+  aws_caller_facts:
+  register: caller_facts
+
+- name: Retrieve AWS account identifier (ARN) for use in resource tags
+  set_fact:
+    aws_arn: "{{ caller_facts.arn }}"
+    aws_resource_name: "velero-{{ caller_facts.arn | hash('md5') }}"
+
+- name: Create S3 bucket for backup storage of OpenShift resource definitions
+  s3_bucket:
+    state: present
+    name: "{{ aws_resource_name }}"
+    tags:
+      owner: "{{ aws_arn }}"
+
+- name: Create IAM user for Velero to assume role of
+  iam_user:
+    state: present
+    name: "{{ aws_resource_name }}"
+
+- name: Create IAM policy entitling Velero user access to S3 bucket and EBS volume storage
+  iam_policy:
+    state: present
+    iam_type: user
+    iam_name: "{{ aws_resource_name }}"
+    policy_name: "{{ aws_resource_name }}"
+    policy_json: "{{ lookup( 'template', 'velero_policy.json.j2') }}"
+
+
+
+
+
+
