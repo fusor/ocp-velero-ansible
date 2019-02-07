@@ -5,6 +5,9 @@ This is a set of Ansible roles which allow you to:
 * Create an install-config.yaml file from a set of defaults
 * Launch an OCP4.0 cluster to AWS
 * Install Ark on the OCP cluster
+* Create Nginx test application
+* Back up Nginx application using Ark
+* Restore Nginx application using Ark
 
 # Prerequisites
 
