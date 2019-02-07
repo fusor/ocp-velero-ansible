@@ -29,7 +29,7 @@ metadata:
   labels:
     app: nginx
 spec:
-  storageClassName: <YOUR_STORAGE_CLASS_NAME>
+  storageClassName: gp2
   accessModes:
     - ReadWriteOnce
   resources:
@@ -59,10 +59,10 @@ spec:
           persistentVolumeClaim:
            claimName: nginx-logs
       containers:
-      - image: nginx:1.7.9
+      - image: docker.io/twalter/openshift-nginx
         name: nginx
         ports:
-        - containerPort: 80
+        - containerPort: 8081
         volumeMounts:
           - mountPath: "/var/log/nginx"
             name: nginx-logs
@@ -86,8 +86,25 @@ metadata:
   namespace: nginx-example
 spec:
   ports:
-  - port: 80
-    targetPort: 80
+  - port: 8081
+    targetPort: 8081
   selector:
     app: nginx
   type: LoadBalancer
+
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: my-nginx
+  namespace: nginx-example
+  labels:
+    app: nginx
+    service: my-nginx
+spec:
+  to:
+    kind: Service
+    name: my-nginx
+  port:
+    targetPort: 8081
+

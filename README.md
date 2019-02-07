@@ -77,3 +77,41 @@ Minio's default credentials are:
 Access Key: minio
 Secret Key: minio123
 ```
+
+## Create an Nginx Application and back it up
+
+As a test application, you can run a playbook that creates Nginx with a route
+and creates an Ark backup:
+
+```
+$ ansible-playbook create-ark.yml
+```
+
+## Simulate DR scenario and restore Nginx from backup
+
+First, delete the project that nginx exists in:
+```
+$ oc delete project nginx-example
+```
+
+Run a restore:
+```
+$ ansible-playbook delete-and-restore-nginx.yml
+```
+
+Verify the nginx route exists:
+```
+$ oc get route -n nginx-example
+```
+
+
+## Destroying an OCP Cluster
+
+If you wish to start with a fresh cluster, I recommend destroying the old
+instance. I have not had much luck launching multiple instances in the same
+directory unless you are certain you know what you are doing.
+
+To destroy the instance:
+```
+$ ./openshift-install destroy cluster
+```

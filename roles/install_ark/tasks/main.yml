@@ -6,6 +6,6 @@
 
 - name: get ark
   unarchive:
-    src: https://github.com/heptio/ark/releases/download/v0.10.1/ark-v0.10.1-linux-amd64.tar.gz
+    src: https://github.com/heptio/velero/releases/download/v0.10.1/ark-v0.10.1-linux-amd64.tar.gz
     dest: "{{ playbook_dir }}/ark"
     remote_src: yes
