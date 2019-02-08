@@ -27,8 +27,34 @@
     policy_name: "{{ aws_resource_name }}"
     policy_json: "{{ lookup( 'template', 'velero_policy.json.j2') }}"
 
+- name: Get AWS access key info for Velero IAM user
+  iam:
+    iam_type: user
+    name: "{{ aws_resource_name }}"
+    state: present
+  register: iam_result
 
+- name: Remove existing AWS access keys for Velero IAM user
+  iam:
+    iam_type: user
+    name: "{{ aws_resource_name }}"
+    state: update
+    access_key_ids: "{{ item.access_key_id }}"
+    access_key_state: remove
+  loop: "{{ iam_result.user_meta.access_keys }}"
 
+- name: Create new AWS access keys for Velero IAM user
+  iam:
+    iam_type: user
+    name: "{{ aws_resource_name }}"
+    state: update
+    access_key_state: create
+  register: iam_result
+
+- name: Store new AWS access keys
+  set_fact:
+    velero_aws_access_key: "{{ iam_result.created_keys[0].access_key_id }}"
+    velero_aws_secret_key: "{{ iam_result.created_keys[0].secret_access_key }}"
 
 
 
