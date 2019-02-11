@@ -8,12 +8,12 @@
 
 - name: Retrieve AWS account identifier (ARN) for use in resource tags
   set_fact:
-    aws_arn: "{{ caller_facts.arn }}"
-    arn_region: "{{ caller_facts.arn }}-{{ awsRegion }}"
+    aws_account_arn: "{{ caller_facts.arn }}"
+    arn_and_region: "{{ caller_facts.arn }}-{{ awsRegion }}"
 
 # Set this separately to explicitly mention we are setting md5 hash to include uniqueness across regions
 - set_fact:
-    aws_resource_name: "velero-{{ arn_region | hash('md5') }}"
+    aws_resource_name: "velero-{{ arn_and_region | hash('md5') }}"
 
 - name: Create S3 bucket for backup storage of OpenShift resource definitions
   s3_bucket:
@@ -21,7 +21,7 @@
     name: "{{ aws_resource_name }}"
     region: "{{ awsRegion }}"
     tags:
-      owner: "{{ aws_arn }}"
+      owner: "{{ aws_account_arn }}"
 
 - name: Create IAM user for Velero to assume role of
   iam_user:
