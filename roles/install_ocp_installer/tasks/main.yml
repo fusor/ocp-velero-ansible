@@ -1,6 +1,9 @@
 ---
+- include_vars:
+    file: "{{ playbook_dir }}/config/defaults.yml"
+
 - name: get installer
   get_url:
-    url: https://github.com/openshift/installer/releases/download/v0.11.0/openshift-install-linux-amd64
+    url: "https://github.com/openshift/installer/releases/download/v{{ installer_version }}/openshift-install-linux-amd64"
     dest: "{{ playbook_dir }}/openshift-install"
     mode: 0775
