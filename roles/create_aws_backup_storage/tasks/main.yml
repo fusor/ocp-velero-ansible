@@ -1,3 +1,7 @@
+- name: Get defaults
+  include_vars:
+    file: "{{ playbook_dir }}/config/defaults.yml"
+
 - name: Get AWS account information
   aws_caller_facts:
   register: caller_facts
@@ -5,7 +9,11 @@
 - name: Retrieve AWS account identifier (ARN) for use in resource tags
   set_fact:
     aws_arn: "{{ caller_facts.arn }}"
-    aws_resource_name: "velero-{{ caller_facts.arn | hash('md5') }}"
+    arn_region: "{{ caller_facts.arn }}-{{ awsRegion }}"
+
+# Set this separately to explicitly mention we are setting md5 hash to include uniqueness across regions
+- set_fact:
+    aws_resource_name: "velero-{{ arn_region | hash('md5') }}"
 
 - name: Create S3 bucket for backup storage of OpenShift resource definitions
   s3_bucket:

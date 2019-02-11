@@ -36,7 +36,7 @@ expect to be present in the config directory `config/`.
 
 To launch an OCP cluster, run:
 ```
-$ ansible-playbook launch-ocp-cluster.yml --extra-vars="@config/defaults.yml"
+$ ansible-playbook launch-ocp-cluster.yml
 ```
 
 This will take a long time... potentially 30-45 minutes.
@@ -57,7 +57,7 @@ time.
 If you wish to launch an Ark Server that uses a real S3 bucket, you must first
 get credentials for the bucket:
 ```
-$ ansible-playbook create-aws-bucket-creds.yml
+$ ansible-playbook create-aws-bucket-creds.yml -e awsRegion=us-east-2
 ```
 
 Then launch the Ark Sever with `provider` set to `aws` and a specified

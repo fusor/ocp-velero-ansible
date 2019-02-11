@@ -1,4 +1,7 @@
 ---
+- include_vars:
+    file: "{{ playbook_dir }}/config/defaults.yml"
+
 - name: check if config exists
   stat:
     path: "{{ playbook_dir }}/install-config.yaml"
