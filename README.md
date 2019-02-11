@@ -25,12 +25,10 @@ expect to be present in the config directory `config/`.
     ```
    * The Ansible tasks will write the credentials to `~/.aws/credentials` if they do not already exist.
 1. Optional:  Update the public SSH key if not using: `~/.ssh/libra_rsa.pub`
-    * If you want to use a different public ssh key, edit 'sshKey' in config/defaults.yml
+    * If you want to use a different public ssh key, edit 'ssh_key' in config/defaults.yml
     ```yaml
-    sshKey: "{{ lookup('file', '~/.ssh/libra_rsa.pub')  }}"
+    ssh_key: "{{ lookup('file', '~/.ssh/libra_rsa.pub')  }}"
     ```
-
-
 
 ## Launch OCP Cluster
 
@@ -57,14 +55,14 @@ time.
 If you wish to launch an Ark Server that uses a real S3 bucket, you must first
 get credentials for the bucket:
 ```
-$ ansible-playbook create-aws-bucket-creds.yml -e awsRegion=us-east-2
+$ ansible-playbook create-aws-bucket-creds.yml -e aws_region=us-east-2
 ```
 
-Then launch the Ark Sever with `veleroProvider` set to `aws` and a specified
-`awsRegion` (alternatively both can be set in `config/defaults.yml` and
+Then launch the Ark Sever with `velero_provider` set to `aws` and a specified
+`aws_region` (alternatively both can be set in `config/defaults.yml` and
 included as shown above):
 ```
-$ ansible-playbook launch-ark.yml -e veleroProvider=aws -e awsRegion=us-east-2
+$ ansible-playbook launch-ark.yml -e velero_provider=aws -e aws_region=us-east-2
 ```
 
 ### Destroying Ark

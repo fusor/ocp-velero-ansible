@@ -1,7 +1,7 @@
 ---
-apiVersion: v1beta1
-baseDomain: mg.dog8code.com
-masterReplicas: 1
-workerReplicas: 1
-awsRegion: us-east-2
-generateConfig: true
+api_version: v1beta1
+base_domain: mg.dog8code.com
+master_replicas: 1
+worker_replicas: 1
+aws_region: us-east-2
+generate_config: true

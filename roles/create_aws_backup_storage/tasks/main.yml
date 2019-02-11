@@ -9,7 +9,7 @@
 - name: Retrieve AWS account identifier (ARN) for use in resource tags
   set_fact:
     aws_account_arn: "{{ caller_facts.arn }}"
-    arn_and_region: "{{ caller_facts.arn }}-{{ awsRegion }}"
+    arn_and_region: "{{ caller_facts.arn }}-{{ aws_region }}"
 
 # Set this separately to explicitly mention we are setting md5 hash to include uniqueness across regions
 - set_fact:
@@ -19,7 +19,7 @@
   s3_bucket:
     state: present
     name: "{{ aws_resource_name }}"
-    region: "{{ awsRegion }}"
+    region: "{{ aws_region }}"
     tags:
       owner: "{{ aws_account_arn }}"
 
