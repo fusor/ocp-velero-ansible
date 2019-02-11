@@ -52,6 +52,21 @@ Don't worry about logging into the cluster, as long as the previous playbook
 was successful Ansible will read the Kubeconfig and kubeadmin password each
 time.
 
+### Installing Ark with S3 storage (no Minio)
+
+If you wish to launch an Ark Server that uses a real S3 bucket, you must first
+get credentials for the bucket:
+```
+$ ansible-playbook create-aws-bucket-creds.yml
+```
+
+Then launch the Ark Sever with `provider` set to `aws` and a specified
+`awsRegion` (alternatively both can be set in `config/defaults.yml` and
+included as shown above):
+```
+$ ansible-playbook launch-ark.yml -e provider=aws -e awsRegion=us-east-2
+```
+
 ### Destroying Ark
 
 If you would like to start with a fresh installation of Ark, you can delete all
