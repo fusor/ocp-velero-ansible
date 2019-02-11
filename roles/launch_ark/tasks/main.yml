@@ -37,7 +37,7 @@
   when: veleroProvider == "minio"
   register: minio_route_res
 
-- name: Create minio backupstoragelocationn for ark
+- name: Create minio backupstoragelocation for ark
   vars:
     minio_route: "{{ minio_route_res | json_query('result.spec.host') | default('foo.example.com') }}"
   k8s:
