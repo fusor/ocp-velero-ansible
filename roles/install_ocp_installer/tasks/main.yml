@@ -1,6 +1,18 @@
 ---
+- set_fact:
+    openshift_installer_release: "v0.12.0"
+    openshift_installer_release_type: "linux"
+
+- name: Setting openshift-installer facts for MacOS
+  set_fact:
+    openshift_installer_release_type: "darwin"
+  when: ansible_os_family == "Darwin"
+
+- set_fact:
+    openshift_installer_release_url: "https://github.com/openshift/installer/releases/download/{{ openshift_installer_release }}/openshift-install-{{ openshift_installer_release_type }}-amd64"
+
 - name: get installer
   get_url:
-    url: https://github.com/openshift/installer/releases/download/v0.11.0/openshift-install-linux-amd64
+    url: "{{ openshift_installer_release_url }}"
     dest: "{{ playbook_dir }}/openshift-install"
     mode: 0775
