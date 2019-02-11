@@ -60,11 +60,11 @@ get credentials for the bucket:
 $ ansible-playbook create-aws-bucket-creds.yml -e awsRegion=us-east-2
 ```
 
-Then launch the Ark Sever with `provider` set to `aws` and a specified
+Then launch the Ark Sever with `veleroProvider` set to `aws` and a specified
 `awsRegion` (alternatively both can be set in `config/defaults.yml` and
 included as shown above):
 ```
-$ ansible-playbook launch-ark.yml -e provider=aws -e awsRegion=us-east-2
+$ ansible-playbook launch-ark.yml -e veleroProvider=aws -e awsRegion=us-east-2
 ```
 
 ### Destroying Ark

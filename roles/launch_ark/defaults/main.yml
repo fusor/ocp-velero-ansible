@@ -1,2 +1,2 @@
 ---
-provider: minio
+veleroProvider: minio
