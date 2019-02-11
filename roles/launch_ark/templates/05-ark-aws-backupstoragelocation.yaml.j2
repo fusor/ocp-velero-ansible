@@ -21,6 +21,6 @@ metadata:
 spec:
   provider: aws
   objectStorage:
-    bucket: {{ bucketName }}
+    bucket: {{ velero_aws_bucket_name }}
   config:
     region: {{ awsRegion }}

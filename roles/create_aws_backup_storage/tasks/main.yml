@@ -11,6 +11,7 @@
   s3_bucket:
     state: present
     name: "{{ aws_resource_name }}"
+    region: "{{ awsRegion }}"
     tags:
       owner: "{{ aws_arn }}"
 
