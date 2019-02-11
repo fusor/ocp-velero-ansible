@@ -1,2 +1,2 @@
 ---
-veleroProvider: minio
+velero_provider: minio
