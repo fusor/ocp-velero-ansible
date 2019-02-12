@@ -1,6 +1,6 @@
 - hosts: localhost
   vars_prompt:
-    - name: clusterName
+    - name: cluster_name
       prompt: "Name of AWS cluster to create"
       private: no
   roles:
