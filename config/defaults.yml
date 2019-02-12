@@ -1,8 +1,8 @@
-aws_access_key_id:
-aws_secret_access_key:
+aws_access_key_id: "{{ lookup('env','AWS_ACCESS_KEY_ID') }}"
+aws_secret_access_key: "{{ lookup('env','AWS_SECRET_ACCESS_KEY') }}"
 pullSecret: "{{ lookup('file', '{{ playbook_dir }}/config/pull-secret') | from_json }}" # Do not modify this line
-sshKey: ""
+sshKey: "{{ lookup('file', '~/.ssh/libra_rsa.pub')  }}"
 baseDomain: mg.dog8code.com # Default mg.dog8code.com
 masterReplicas: 1 # Default 1
 workerReplicas: 1 # Default 1
-awsRegion: us-east-2 # Default us-east-2
+awsRegion: "{{ lookup('env','AWS_DEFAULT_REGION') or 'us-east-2' }}"   # Default us-east-2

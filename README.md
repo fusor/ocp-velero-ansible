@@ -17,23 +17,20 @@ expect to be present in the config directory `config/`.
 
 1. Download the Pull secret from https://try.openshift.com (assume `~/Downloads`)
 1. `cp ~/Downloads/pull-secret config/`
+1. Ensure you have set the following ENVIRONMENT VARIABLES
+    ```
+      export AWS_ACCESS_KEY_ID=XXXX
+      export AWS_SECRET_ACCESS_KEY=XXXX
+      export AWS_DEFAULT_REGION=us-east-2
+    ```
+   * The Ansible tasks will write the credentials to `~/.aws/credentials` if they do not already exist.
+1. Optional:  Update the public SSH key if not using: `~/.ssh/libra_rsa.pub`
+    * If you want to use a different public ssh key, edit 'sshKey' in config/defaults.yml
+    ```yaml
+    sshKey: "{{ lookup('file', '~/.ssh/libra_rsa.pub')  }}"
+    ```
 
-Modify the values in `config/defaults.yml` with the proper AWS credentials and
-SSH Key to use for the install:
-```yaml
-aws_access_key_id: ******
-aws_secret_access_key: *******
-pullSecret: "{{ lookup('file', '{{ playbook_dir }}//config/pull-secret') | from_json }}" # Do not modify this line
-sshKey: "ssh-rsa ************************"
-baseDomain: mg.dog8code.com
-masterReplicas: 1
-workerReplicas: 1
-awsRegion: us-east-2
-```
 
-The Ansible tasks will write the credentials to `~/.aws/credentials` if they do
-not already exist. You may optionally leave these vars empty and we will
-attempt to read the credentials from `~/.aws/credentials`.
 
 ## Launch OCP Cluster
 
@@ -87,7 +84,7 @@ As a test application, you can run a playbook that creates Nginx with a route
 and creates an Ark backup:
 
 ```
-$ ansible-playbook create-ark.yml
+$ ansible-playbook create-nginx.yml
 ```
 
 ## Simulate DR scenario and restore Nginx from backup
@@ -117,4 +114,39 @@ directory unless you are certain you know what you are doing.
 To destroy the instance:
 ```
 $ ./openshift-install destroy cluster
+```
+
+# Tips/Known Issues
+
+## MacOS Requires 'gnu tar' for Ansible's unarchive module
+  * If running on MacOS, ensure you have 'gnu tar' installed and set as default 'tar' from your PATH
+  * Example error
+```
+TASK [install_ark : get ark] ***************************************************************************************************************************************
+
+fatal: [localhost]: FAILED! => {"changed": false, "msg": "Failed to find handler for \"/Users/jmatthews/.ansible/tmp/ansible-tmp-1549911393.33-241542192915430/ark-v0.10.1-linux-amd64.tar.gz\". Make sure the required command to extract the file is installed. Command \"/usr/bin/tar\" detected as tar type bsd. GNU tar required. Command \"/usr/bin/unzip\" could not handle archive."}
+```
+  * Solution is to install 'gnu tar'
+
+```
+# If you see the below (which is the default in MacOS) you will need to install gnu tar
+$ /usr/bin/tar --version
+bsdtar 2.8.3 - libarchive 2.8.3
+
+# To install gnu tar
+brew install gnu-tar
+
+# Then add the below to your ~/.bashrc towards the end
+PATH="/usr/local/opt/gnu-tar/libexec/gnubin:$PATH"
+
+# Then source your ~/.bashrc to pick up the change
+source ~/.bashrc
+
+# Now confirm that when you run tar you are running the gnu version
+$ tar --version
+tar (GNU tar) 1.31
+Copyright (C) 2019 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <https://gnu.org/licenses/gpl.html>.
+...
+
 ```
