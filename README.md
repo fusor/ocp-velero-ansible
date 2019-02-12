@@ -25,18 +25,16 @@ expect to be present in the config directory `config/`.
     ```
    * The Ansible tasks will write the credentials to `~/.aws/credentials` if they do not already exist.
 1. Optional:  Update the public SSH key if not using: `~/.ssh/libra_rsa.pub`
-    * If you want to use a different public ssh key, edit 'sshKey' in config/defaults.yml
+    * If you want to use a different public ssh key, edit 'ssh_key' in config/defaults.yml
     ```yaml
-    sshKey: "{{ lookup('file', '~/.ssh/libra_rsa.pub')  }}"
+    ssh_key: "{{ lookup('file', '~/.ssh/libra_rsa.pub')  }}"
     ```
-
-
 
 ## Launch OCP Cluster
 
 To launch an OCP cluster, run:
 ```
-$ ansible-playbook launch-ocp-cluster.yml --extra-vars="@config/defaults.yml"
+$ ansible-playbook launch-ocp-cluster.yml
 ```
 
 This will take a long time... potentially 30-45 minutes.
@@ -51,6 +49,21 @@ $ ansible-playbook launch-ark.yml
 Don't worry about logging into the cluster, as long as the previous playbook
 was successful Ansible will read the Kubeconfig and kubeadmin password each
 time.
+
+### Installing Ark with S3 storage (no Minio)
+
+If you wish to launch an Ark Server that uses a real S3 bucket, you must first
+get credentials for the bucket:
+```
+$ ansible-playbook create-aws-bucket-creds.yml -e aws_region=us-east-2
+```
+
+Then launch the Ark Sever with `velero_provider` set to `aws` and a specified
+`aws_region` (alternatively both can be set in `config/defaults.yml` and
+included as shown above):
+```
+$ ansible-playbook launch-ark.yml -e velero_provider=aws -e aws_region=us-east-2
+```
 
 ### Destroying Ark
 

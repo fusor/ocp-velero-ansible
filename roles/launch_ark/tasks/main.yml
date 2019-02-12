@@ -1,4 +1,11 @@
 ---
+- include_vars:
+    file: "{{ playbook_dir }}/config/defaults.yml"
+
+- include_vars:
+    file: "{{ playbook_dir }}/config/velero_aws_creds.yml"
+  when: velero_provider == "aws"
+
 - name: Apply ark common prereqs
   k8s:
     state: "{{ state }}"
@@ -7,6 +14,8 @@
   k8s:
     state: "{{ state }}"
     definition: "{{ lookup('file', '{{ playbook_dir }}/ark/config/minio/00-minio-deployment.yaml')}}"
+  when: velero_provider == "minio"
+
 - name: Create minio route
   k8s:
     state: "{{ state }}"
@@ -25,15 +34,42 @@
           name: minio
         port:
           targetPort: 9000
+  when: velero_provider == "minio"
   register: minio_route_res
-- name: Create backupstoragelocationn for ark
+
+- name: Create minio backupstoragelocation for ark
   vars:
     minio_route: "{{ minio_route_res | json_query('result.spec.host') | default('foo.example.com') }}"
   k8s:
     state: "{{ state }}"
-    definition: "{{ lookup('template', '05-ark-backupstoragelocation.yaml.j2') | from_yaml }}"
+    definition: "{{ lookup('template', '05-ark-minio-backupstoragelocation.yaml.j2') | from_yaml }}"
   ignore_errors: yes
+  when: velero_provider == "minio"
 
+- name: Create aws backupstoragelocation for ark
+  k8s:
+    state: "{{ state }}"
+    definition: "{{ lookup('template', '05-ark-aws-backupstoragelocation.yaml.j2') | from_yaml }}"
+  when: velero_provider == "aws"
+
+- name: Create aws volumesnapshotlocation for ark
+  k8s:
+    state: "{{ state }}"
+    definition: "{{ lookup('template', '06-ark-aws-volumesnapshotlocation.yaml.j2') | from_yaml }}"
+  when: velero_provider == "aws"
+
+- name: Create aws bucket cloud creds
+  k8s:
+    state: "{{ state }}"
+    definition:
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: cloud-credentials
+        namespace: heptio-ark
+      data:
+        cloud: "{{ lookup('template', 'cloud-credentials.j2') | b64encode }}"
+  when: velero_provider == "aws"
 
 - name: Create ark deployment
   k8s:

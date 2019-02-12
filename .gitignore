@@ -1,5 +1,7 @@
 .openshift*
 config/pull-secret
+config/velero_aws_creds.yml
+config/defaults.yml
 ark/
 metadata.json
 openshift-install

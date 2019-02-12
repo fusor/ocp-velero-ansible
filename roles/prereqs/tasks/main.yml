@@ -1,4 +1,7 @@
 ---
+- include_vars:
+    file: "{{ playbook_dir }}/config/defaults.yml"
+
 - name: check if config exists
   stat:
     path: "{{ playbook_dir }}/install-config.yaml"
@@ -17,13 +20,13 @@
 - name: fail if config doesn't exist
   fail:
     msg: "install-config.yaml not found in current dir"
-  when: p.stat.exists == false and generateConfig == false
+  when: p.stat.exists == false and generate_config == false
 
 - name: template install file
   template:
     src: install-config.yaml.j2
     dest: "{{ playbook_dir }}/install-config.yaml"
-  when: generateConfig|bool == true and p.stat.exists == false
+  when: generate_config|bool == true and p.stat.exists == false
 
 - name: create aws creds dir
   file:

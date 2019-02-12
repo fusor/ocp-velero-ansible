@@ -1,18 +1,27 @@
+- name: Get defaults
+  include_vars:
+    file: "{{ playbook_dir }}/config/defaults.yml"
+
 - name: Get AWS account information
   aws_caller_facts:
   register: caller_facts
 
 - name: Retrieve AWS account identifier (ARN) for use in resource tags
   set_fact:
-    aws_arn: "{{ caller_facts.arn }}"
-    aws_resource_name: "velero-{{ caller_facts.arn | hash('md5') }}"
+    aws_account_arn: "{{ caller_facts.arn }}"
+    arn_and_region: "{{ caller_facts.arn }}-{{ aws_region }}"
+
+# Set this separately to explicitly mention we are setting md5 hash to include uniqueness across regions
+- set_fact:
+    aws_resource_name: "velero-{{ arn_and_region | hash('md5') }}"
 
 - name: Create S3 bucket for backup storage of OpenShift resource definitions
   s3_bucket:
     state: present
     name: "{{ aws_resource_name }}"
+    region: "{{ aws_region }}"
     tags:
-      owner: "{{ aws_arn }}"
+      owner: "{{ aws_account_arn }}"
 
 - name: Create IAM user for Velero to assume role of
   iam_user:
@@ -27,8 +36,36 @@
     policy_name: "{{ aws_resource_name }}"
     policy_json: "{{ lookup( 'template', 'velero_policy.json.j2') }}"
 
+- name: Get AWS access key info for Velero IAM user
+  iam:
+    iam_type: user
+    name: "{{ aws_resource_name }}"
+    state: present
+  register: iam_result
 
+- name: Remove existing AWS access keys for Velero IAM user
+  iam:
+    iam_type: user
+    name: "{{ aws_resource_name }}"
+    state: update
+    access_key_ids: "{{ item.access_key_id }}"
+    access_key_state: remove
+  loop: "{{ iam_result.user_meta.access_keys }}"
 
+- name: Create new AWS access keys for Velero IAM user
+  iam:
+    iam_type: user
+    name: "{{ aws_resource_name }}"
+    state: update
+    access_key_state: create
+  register: iam_result
 
+- name: Store new AWS access keys
+  set_fact:
+    velero_aws_access_key: "{{ iam_result.created_keys[0].access_key_id }}"
+    velero_aws_secret_key: "{{ iam_result.created_keys[0].secret_access_key }}"
 
-
+- name: Write Velero AWS access keys to config/velero_aws_creds.yml
+  template:
+    src: velero_aws_creds.yml.j2
+    dest: "{{ playbook_dir }}/config/velero_aws_creds.yml"
