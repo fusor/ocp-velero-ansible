@@ -17,10 +17,9 @@
     namespace: "nginx-example"
     name: "nginx-example"
   register: ns
-  until: not ns
+  until: ns.resources | length == 0
   retries: 10
   delay: 5
-
 
 - name: Create ark restore of nginx
   k8s:
@@ -29,24 +28,24 @@
 
 - name: Wait 3 minutes for restore to finish
   k8s_facts:
-    api_version: "apps/v1"
+    api_version: "v1"
     kind: "Restore"
     namespace: "heptio-ark"
     name: "nginx-backup"
   register: restore
-  until: restore and restore[0].status.get("phase", 0) == "Completed"
+  until: restore and (restore.resources | length > 0) and (restore.resources[0].status.get("phase", 0) == "Completed")
   retries: 20
   delay: 10
 
 - name: Wait 2 minutes for nginx deployment
   k8s_facts:
-    api_version: "apps/v1"
+    api_version: "v1"
     kind: "Deployment"
     namespace: "nginx-example"
     label_selectors:
       - "app = nginx"
   register: deploy
-  until: deploy and deploy.resources[0].status.replicas == deploy.resources[0].status.get("availableReplicas", 0)
+  until: deploy and (deploy.resources | length > 0) and (deploy.resources[0].status.replicas == deploy.resources[0].status.get("availableReplicas", 0))
   retries: 10
   delay: 10
 

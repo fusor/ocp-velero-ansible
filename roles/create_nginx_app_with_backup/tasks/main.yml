@@ -12,7 +12,7 @@
     label_selectors:
       - "app = nginx"
   register: deploy
-  until: deploy and deploy.resources[0].status.replicas == deploy.resources[0].status.get("availableReplicas", 0)
+  until: deploy and (deploy.resources | length > 0) and (deploy.resources[0].status.replicas == deploy.resources[0].status.get("availableReplicas", 0))
   retries: 10
   delay: 10
 
@@ -27,6 +27,6 @@
     kind: "Backup"
     namespace: "heptio-ark"
   register: backup
-  until: backup and backup.resources[0].status.get("phase", 0) == "Completed"
+  until: backup and (backup.resources | length > 0) and (backup.resources[0].status.get("phase", 0) == "Completed")
   retries: 10
   delay: 5
