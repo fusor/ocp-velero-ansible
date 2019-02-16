@@ -33,7 +33,9 @@
     namespace: "heptio-ark"
     name: "nginx-backup"
   register: restore
-  until: restore and (restore.resources | length > 0) and (restore.resources[0].status.get("phase", 0) == "Completed")
+  until: restore
+         and (restore.resources | length > 0)
+         and (restore.resources[0].get("status", {}).get("phase", 0) == "Completed")
   retries: 20
   delay: 10
 
@@ -45,7 +47,9 @@
     label_selectors:
       - "app = nginx"
   register: deploy
-  until: deploy and (deploy.resources | length > 0) and (deploy.resources[0].status.replicas == deploy.resources[0].status.get("availableReplicas", 0))
+  until: deploy
+         and (deploy.resources | length > 0)
+         and (deploy.resources[0].get("status", {}).get("replicas", -1) == deploy.resources[0].get("status", {}).get("availableReplicas", -2))
   retries: 10
   delay: 10
 
