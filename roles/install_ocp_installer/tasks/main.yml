@@ -1,6 +1,6 @@
 ---
 - set_fact:
-    openshift_installer_release: "v0.12.0"
+    openshift_installer_release: "v0.14.0"
     openshift_installer_release_type: "linux"
 
 - name: Setting openshift-installer facts for MacOS

@@ -1,5 +1,5 @@
 ---
-api_version: v1beta1
+api_version: v1beta3
 base_domain: mg.dog8code.com
 master_replicas: 1
 worker_replicas: 1
