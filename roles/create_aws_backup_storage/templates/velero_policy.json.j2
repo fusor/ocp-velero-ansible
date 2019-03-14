@@ -29,7 +29,9 @@
         {
             "Effect": "Allow",
             "Action": [
-                "s3:ListBucket"
+                "s3:ListBucket",
+                "s3:GetBucketLocation",
+                "s3:ListBucketMultipartploads"
             ],
             "Resource": [
                 "arn:aws:s3:::{{ aws_resource_name }}"
