@@ -1,4 +1,15 @@
 ---
+- set_fact:
+    ark_release_type: "linux"
+
+- name: Setting ark facts for MacOS
+  set_fact:
+    ark_release_type: "darwin"
+  when: ansible_os_family == "Darwin"
+
+- set_fact:
+    ark_release_url: "https://github.com/heptio/velero/releases/download/v0.10.1/ark-v0.10.1-{{ ark_release_type }}-amd64.tar.gz"
+
 - name: create ark dir
   file:
     path: "{{ playbook_dir }}/ark"
@@ -6,6 +17,6 @@
 
 - name: get ark
   unarchive:
-    src: https://github.com/heptio/velero/releases/download/v0.10.1/ark-v0.10.1-linux-amd64.tar.gz
+    src: "{{ ark_release_url }}"
     dest: "{{ playbook_dir }}/ark"
     remote_src: yes
