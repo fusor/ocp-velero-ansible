@@ -6,3 +6,4 @@ base_domain: mg.dog8code.com # Default mg.dog8code.com
 master_replicas: 1 # Default 1
 worker_replicas: 1 # Default 1
 aws_region: "{{ lookup('env','AWS_DEFAULT_REGION') or 'us-east-2' }}"   # Default us-east-2
+velero_provider: aws

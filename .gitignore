@@ -3,6 +3,7 @@ config/pull-secret
 config/velero_aws_creds.yml
 config/defaults.yml
 ark/
+velero/
 metadata.json
 openshift-install
 tls/

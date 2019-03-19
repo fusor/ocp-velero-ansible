@@ -1,9 +1,9 @@
 ---
-apiVersion: ark.heptio.com/v1
+apiVersion: velero.io/v1
 kind: Backup
 metadata:
   name: nginx-backup
-  namespace: heptio-ark
+  namespace: velero
 spec:
   labelSelector:
     matchLabels:

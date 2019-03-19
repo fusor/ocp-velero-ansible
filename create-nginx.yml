@@ -4,6 +4,5 @@
   environment:
     KUBECONFIG: "{{ playbook_dir }}/auth/kubeconfig"
   roles:
-  - install_ark
   - login_ocp
   - create_nginx_app_with_backup

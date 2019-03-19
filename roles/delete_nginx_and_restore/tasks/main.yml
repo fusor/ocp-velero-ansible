@@ -10,27 +10,17 @@
         labels:
           app: nginx
 
-- name: Wait 2 minutes for namespace to be deleted
-  k8s_facts:
-    api_version: "v1"
-    kind: "Namespace"
-    namespace: "nginx-example"
-    name: "nginx-example"
-  register: ns
-  until: ns.resources | length == 0
-  retries: 10
-  delay: 5
 
-- name: Create ark restore of nginx
+- name: Create velero restore of nginx
   k8s:
     state: present
     definition: "{{ lookup('file', 'create-restore.yml')}}"
 
 - name: Wait 3 minutes for restore to finish
   k8s_facts:
-    api_version: "v1"
+    api_version: "velero.io/v1"
     kind: "Restore"
-    namespace: "heptio-ark"
+    namespace: "velero"
     name: "nginx-backup"
   register: restore
   until: restore
@@ -53,7 +43,7 @@
   retries: 10
   delay: 10
 
-- name: Delete ark restore of nginx (workaround to use common name for restore)
+- name: Delete velero restore of nginx (workaround to use common name for restore)
   k8s:
     state: absent
     definition: "{{ lookup('file', 'create-restore.yml')}}"
