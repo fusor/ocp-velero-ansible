@@ -1,9 +1,9 @@
 - hosts: localhost
   vars:
-    state: present
+    state: absent
   environment:
     KUBECONFIG: "{{ playbook_dir }}/auth/kubeconfig"
   roles:
-  - install_ark
+  - install_velero
   - login_ocp
-  - launch_ark
+  - launch_velero

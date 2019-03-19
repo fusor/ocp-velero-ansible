@@ -1,0 +1,22 @@
+---
+- set_fact:
+    velero_release_type: "linux"
+
+- name: Setting ark facts for MacOS
+  set_fact:
+    velero_release_type: "darwin"
+  when: ansible_os_family == "Darwin"
+
+- set_fact:
+    velero_release_url: "https://github.com/heptio/velero/releases/download/v0.11.0/velero-v0.11.0-{{ velero_release_type }}-amd64.tar.gz"
+
+- name: create velero dir
+  file:
+    path: "{{ playbook_dir }}/velero"
+    state: directory
+
+- name: get velero
+  unarchive:
+    src: "{{ velero_release_url }}"
+    dest: "{{ playbook_dir }}/velero"
+    remote_src: yes

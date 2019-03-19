@@ -6,14 +6,14 @@
     file: "{{ playbook_dir }}/config/velero_aws_creds.yml"
   when: velero_provider == "aws"
 
-- name: Apply ark common prereqs
+- name: Apply velero common prereqs
   k8s:
     state: "{{ state }}"
-    definition: "{{ lookup('file', '{{ playbook_dir }}/ark/config/common/00-prereqs.yaml')}}"
+    definition: "{{ lookup('file', '{{ playbook_dir }}/velero/config/common/00-prereqs.yaml')}}"
 - name: Create minio deployment
   k8s:
     state: "{{ state }}"
-    definition: "{{ lookup('file', '{{ playbook_dir }}/ark/config/minio/00-minio-deployment.yaml')}}"
+    definition: "{{ lookup('file', '{{ playbook_dir }}/velero/config/minio/00-minio-deployment.yaml')}}"
   when: velero_provider == "minio"
 
 - name: Create minio route
@@ -24,7 +24,7 @@
       apiVersion: route.openshift.io/v1
       metadata:
         name: minio
-        namespace: heptio-ark
+        namespace: velero
         labels:
           component: minio
           service: minio
@@ -37,7 +37,7 @@
   when: velero_provider == "minio"
   register: minio_route_res
 
-- name: Create minio backupstoragelocation for ark
+- name: Create minio backupstoragelocation for velero
   vars:
     minio_route: "{{ minio_route_res | json_query('result.spec.host') | default('foo.example.com') }}"
   k8s:
@@ -46,13 +46,13 @@
   ignore_errors: yes
   when: velero_provider == "minio"
 
-- name: Create aws backupstoragelocation for ark
+- name: Create aws backupstoragelocation for velero
   k8s:
     state: "{{ state }}"
     definition: "{{ lookup('template', '05-ark-aws-backupstoragelocation.yaml.j2') | from_yaml }}"
   when: velero_provider == "aws"
 
-- name: Create aws volumesnapshotlocation for ark
+- name: Create aws volumesnapshotlocation for velero
   k8s:
     state: "{{ state }}"
     definition: "{{ lookup('template', '06-ark-aws-volumesnapshotlocation.yaml.j2') | from_yaml }}"
@@ -66,17 +66,17 @@
       kind: Secret
       metadata:
         name: cloud-credentials
-        namespace: heptio-ark
+        namespace: velero
       data:
         cloud: "{{ lookup('template', 'cloud-credentials.j2') | b64encode }}"
   when: velero_provider == "aws"
 
-- name: Create ark deployment
+- name: Create velero deployment
   k8s:
     state: "{{ state }}"
-    definition: "{{ lookup('file', '{{ playbook_dir }}/ark/config/minio/20-ark-deployment.yaml')}}"
+    definition: "{{ lookup('file', '{{ playbook_dir }}/velero/config/minio/20-deployment.yaml')}}"
 - name: Create restic daemonset
   k8s:
     state: "{{ state }}"
-    definition: "{{ lookup('file', '{{ playbook_dir }}/ark/config/minio/30-restic-daemonset.yaml')}}"
+    definition: "{{ lookup('file', '{{ playbook_dir }}/velero/config/minio/30-restic-daemonset.yaml')}}"
 

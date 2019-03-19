@@ -2,6 +2,5 @@
   environment:
     KUBECONFIG: "{{ playbook_dir }}/auth/kubeconfig"
   roles:
-  - install_ark
   - login_ocp
   - delete_nginx_and_restore

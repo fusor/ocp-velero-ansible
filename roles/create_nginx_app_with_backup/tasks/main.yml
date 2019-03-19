@@ -16,16 +16,16 @@
          and (deploy.resources | length > 0)
          and (deploy.resources[0].get("status", {}).get("replicas",-1) == deploy.resources[0].get("status", {}).get("availableReplicas", -2))
 
-- name: Create ark backup of nginx
+- name: Create velero backup of nginx
   k8s:
     state : "{{ state }}"
     definition: "{{ lookup('file', 'create-backup.yml')}}"
 
 - name: Wait 1 minute for backup to complete
   k8s_facts:
-    api_version: "ark.heptio.com/v1"
+    api_version: "velero.io/v1"
     kind: "Backup"
-    namespace: "heptio-ark"
+    namespace: "velero"
   register: backup
   until: backup
          and (backup.resources | length > 0)

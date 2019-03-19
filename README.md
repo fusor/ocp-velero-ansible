@@ -1,13 +1,13 @@
-# ark-ansible
+# velero-ansible
 
 This is a set of Ansible roles which allow you to:
-* Download Ark and OpenShift Installer
+* Download Velero and OpenShift Installer
 * Create an install-config.yaml file from a set of defaults
 * Launch an OCP4.0 cluster to AWS
-* Install Ark on the OCP cluster
+* Install Velero on the OCP cluster
 * Create Nginx test application
-* Back up Nginx application using Ark
-* Restore Nginx application using Ark
+* Back up Nginx application using Velero
+* Restore Nginx application using Velero
 
 # Prerequisites
 
@@ -39,38 +39,38 @@ $ ansible-playbook launch-ocp-cluster.yml
 
 This will take a long time... potentially 30-45 minutes.
 
-## Installing Ark
+## Installing Velero
 
-To launch an Ark Server onto OCP, run:
+To launch an Velero Server onto OCP, run:
 ```
-$ ansible-playbook launch-ark.yml
+$ ansible-playbook launch-velero.yml
 ```
 
 Don't worry about logging into the cluster, as long as the previous playbook
 was successful Ansible will read the Kubeconfig and kubeadmin password each
 time.
 
-### Installing Ark with S3 storage (no Minio)
+### Installing Velero with S3 storage (no Minio)
 
-If you wish to launch an Ark Server that uses a real S3 bucket, you must first
+If you wish to launch an Velero Server that uses a real S3 bucket, you must first
 get credentials for the bucket:
 ```
 $ ansible-playbook create-aws-bucket-creds.yml -e aws_region=us-east-2
 ```
 
-Then launch the Ark Sever with `velero_provider` set to `aws` and a specified
+Then launch the Velero Sever with `velero_provider` set to `aws` and a specified
 `aws_region` (alternatively both can be set in `config/defaults.yml` and
 included as shown above):
 ```
-$ ansible-playbook launch-ark.yml -e velero_provider=aws -e aws_region=us-east-2
+$ ansible-playbook launch-velero.yml -e velero_provider=aws -e aws_region=us-east-2
 ```
 
-### Destroying Ark
+### Destroying Velero
 
-If you would like to start with a fresh installation of Ark, you can delete all
-the Ark resources with:
+If you would like to start with a fresh installation of Velero, you can delete all
+the Velero resources with:
 ```
-$ ansible-playbook destroy-ark.yml
+$ ansible-playbook destroy-velero.yml
 ```
 
 ## Visit Minio
@@ -78,11 +78,11 @@ $ ansible-playbook destroy-ark.yml
 To confirm everything was installed propery, you can visit the created route
 and login to the minio instance. To get the route:
 ```
-$ export KUBECONFIG=<ark-ansible-directory>/auth/kubeconfig
-$ oc get route -n heptio-ark
-[dymurray@pups ark-ansible]$ oc get route
+$ export KUBECONFIG=<velero-ansible-directory>/auth/kubeconfig
+$ oc get route -n velero
+[dymurray@pups velero-ansible]$ oc get route
 NAME      HOST/PORT                                   PATH      SERVICES   PORT      TERMINATION   WILDCARD
-minio     minio-heptio-ark.apps.dtm.mg.dog8code.com             minio      9000                    None
+minio     minio-velero.apps.dtm.mg.dog8code.com             minio      9000                    None
 ```
 
 Minio's default credentials are:
@@ -94,7 +94,7 @@ Secret Key: minio123
 ## Create an Nginx Application and back it up
 
 As a test application, you can run a playbook that creates Nginx with a route
-and creates an Ark backup:
+and creates an Velero backup:
 
 ```
 $ ansible-playbook create-nginx.yml
@@ -135,9 +135,9 @@ $ ./openshift-install destroy cluster
   * If running on MacOS, ensure you have 'gnu tar' installed and set as default 'tar' from your PATH
   * Example error
 ```
-TASK [install_ark : get ark] ***************************************************************************************************************************************
+TASK [install_velero : get velero] ***************************************************************************************************************************************
 
-fatal: [localhost]: FAILED! => {"changed": false, "msg": "Failed to find handler for \"/Users/jmatthews/.ansible/tmp/ansible-tmp-1549911393.33-241542192915430/ark-v0.10.1-linux-amd64.tar.gz\". Make sure the required command to extract the file is installed. Command \"/usr/bin/tar\" detected as tar type bsd. GNU tar required. Command \"/usr/bin/unzip\" could not handle archive."}
+fatal: [localhost]: FAILED! => {"changed": false, "msg": "Failed to find handler for \"/Users/jmatthews/.ansible/tmp/ansible-tmp-1549911393.33-241542192915430/velero-v0.11.0-linux-amd64.tar.gz\". Make sure the required command to extract the file is installed. Command \"/usr/bin/tar\" detected as tar type bsd. GNU tar required. Command \"/usr/bin/unzip\" could not handle archive."}
 ```
   * Solution is to install 'gnu tar'
 
