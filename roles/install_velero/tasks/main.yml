@@ -20,3 +20,20 @@
     src: "{{ velero_release_url }}"
     dest: "{{ playbook_dir }}/velero"
     remote_src: yes
+
+- name: Update image
+  replace:
+    path: "{{ playbook_dir }}/velero/config/{{ item }}"
+    regexp: 'gcr.io/heptio-images/velero:.*'
+    replace: 'quay.io/ocpmigrate/velero:fusor-dev'
+  with_items:
+  - ibm/10-deployment.yaml
+  - minio/20-deployment.yaml
+  - minio/30-restic-daemonset.yaml
+  - azure/00-deployment.yaml
+  - azure/20-restic-daemonset.yaml
+  - gcp/20-restic-daemonset.yaml
+  - gcp/10-deployment.yaml
+  - aws/20-restic-daemonset.yaml
+  - aws/10-deployment.yaml
+  - aws/10-deployment-kube2iam.yaml
