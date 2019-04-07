@@ -1,0 +1,8 @@
+- hosts: localhost
+  vars:
+    state: present
+  environment:
+    KUBECONFIG: "{{ playbook_dir }}/auth/kubeconfig"
+  roles:
+  - login_ocp
+  - launch_migration_registry

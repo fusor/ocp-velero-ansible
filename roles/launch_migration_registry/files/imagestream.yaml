@@ -1,0 +1,25 @@
+---
+apiVersion: image.openshift.io/v1
+kind: ImageStream
+metadata:
+  creationTimestamp: null
+  labels:
+    app: migration-registry
+  name: migration-registry
+  namespace: migration-registry
+spec:
+  lookupPolicy:
+    local: false
+  tags:
+  - annotations:
+      openshift.io/imported-from: registry:2
+    from:
+      kind: DockerImage
+      name: registry:2
+    generation: null
+    importPolicy: {}
+    name: "2"
+    referencePolicy:
+      type: ""
+status:
+  dockerImageRepository: ""
