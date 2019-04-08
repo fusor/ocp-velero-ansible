@@ -1,0 +1,46 @@
+---
+- include_vars:
+    file: "{{ playbook_dir }}/config/defaults.yml"
+
+- include_vars:
+    file: "{{ playbook_dir }}/config/velero_aws_creds.yml"
+
+- name: Create migration-registry namespace
+  k8s:
+    state: "{{ state }}"
+    definition:
+      apiVersion: v1
+      kind: Namespace
+      metadata:
+        name: migration-registry
+
+- name: Create aws bucket cloud creds
+  k8s:
+    state: "{{ state }}"
+    definition:
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: migration-registry-secret
+        namespace: migration-registry
+      type: Opaque
+      data:
+        access_key: "{{ velero_aws_access_key | b64encode }}"
+        secret_key: "{{ velero_aws_secret_key | b64encode }}"
+
+- name: Create migration registry imagestream
+  k8s:
+    state: "{{ state }}"
+    definition: "{{ lookup('file', 'imagestream.yaml')}}"
+
+- name: Create migration registry DeploymentConfig
+  k8s:
+    state: "{{ state }}"
+    definition: "{{ lookup('template', 'deploymentconfig.yaml.j2') | from_yaml }}"
+
+- name: Create migration registry service
+  k8s:
+    state: "{{ state }}"
+    definition: "{{ lookup('file', 'service.yaml')}}"
+
+
