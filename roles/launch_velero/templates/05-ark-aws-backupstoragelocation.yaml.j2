@@ -22,5 +22,6 @@ spec:
   provider: aws
   objectStorage:
     bucket: {{ velero_aws_bucket_name }}
+    prefix: velero-backups
   config:
     region: {{ aws_region }}
