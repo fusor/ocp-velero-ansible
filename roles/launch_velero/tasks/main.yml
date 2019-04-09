@@ -75,10 +75,13 @@
   k8s:
     state: "{{ state }}"
     definition: "{{ lookup('file', '{{ playbook_dir }}/velero/config/minio/20-deployment.yaml')}}"
+
 - name: Create restic daemonset
   k8s:
     state: "{{ state }}"
     definition: "{{ lookup('file', '{{ playbook_dir }}/velero/config/minio/30-restic-daemonset.yaml')}}"
+
 - name: Install ocpmigrate plugin
   shell: "{{ playbook_dir }}/velero/velero plugin add quay.io/ocpmigrate/velero-plugin"
+  when: state == "present"
 
