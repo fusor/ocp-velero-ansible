@@ -19,7 +19,7 @@ metadata:
   name: default
   namespace: velero
 spec:
-  provider: aws
+  provider: velero.io/aws
   objectStorage:
     bucket: {{ velero_aws_bucket_name }}
     prefix: velero-backups
