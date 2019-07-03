@@ -82,6 +82,6 @@
     definition: "{{ lookup('file', '{{ playbook_dir }}/velero/config/minio/30-restic-daemonset.yaml')}}"
 
 - name: Install ocpmigrate plugin
-  shell: "{{ playbook_dir }}/velero/velero plugin add quay.io/ocpmigrate/velero-plugin"
+  shell: "{{ playbook_dir }}/velero/velero plugin add quay.io/ocpmigrate/migration-plugin:latest"
   when: state == "present"
 
